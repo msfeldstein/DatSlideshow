@@ -1,0 +1,12 @@
+/*
+ * Want to change this website's styes? Learn more about CSS:
+ * https://developer.mozilla.org/en-US/docs/Learn/CSS/Introduction_to_CSS
+ */
+
+html, body, #container {
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  color: white;
+}
