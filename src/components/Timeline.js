@@ -1,31 +1,42 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { colors } from 'style-constants'
-import Reorder from 'react-reorder'
+import Sortable from 'react-sortable'
+import TimelineEntry from './TimelineEntry'
 
 class Timeline extends Component {
+  onSortItems() {
+    console.log("SORT", arguments)
+  }
+  
   render() {
     const style = {
-      background: colors.GRAY
+      background: colors.GRAY,
+      display: 'flex',
+      flexOrient: 'row',
+      listStyleType: 'none',
+      margin: 0,
+      padding: 0,
+      overflowX: 'scroll'
     }
-    const elements = this.props.entries.map(e => {
-      return {
-        name: e.path,
-        path: e.path
-      }
+    let elements = this.props.entries.map((e, i) => {
+      return <TimelineEntry
+        element={e}
+        sortId={i}
+        onSortItems={this.onSortItems.bind(this)}
+        items={this.props.entries}
+        key={i} />
     })
-    return <Reorder
-      style={style}
-      itemKey='name'
-      lock='vertical'
-      list={elements}
-      template={TimelineEntry}
-      />
+    return (
+      <ul className='sortable-list' style={style}>
+        {elements}
+      </ul>
+    )
   }
 }
 
 export default connect(state => {
   return {
-    entries: state.images.entries
+    entries: state.images.entries || []
   }
 })(Timeline)

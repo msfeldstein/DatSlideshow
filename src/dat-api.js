@@ -9,5 +9,5 @@ export async function save(entries) {
 export async function load() {
   const json = await archive.readFile(DATA_FILE)
   const obj = JSON.parse(json)
-  console.log(json, obj)
+  return obj
 }

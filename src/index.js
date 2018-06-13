@@ -12,7 +12,8 @@ const store = createStore(combineReducers({
 }), applyMiddleware(thunk))
 
 load().then(data => {
-  console.log(data)
+  console.log(data, 'data')
+  store.dispatch(initialize(data))
 })
 
 render(

@@ -22,8 +22,6 @@ export function addImage(buffer) {
     let archive = new DatArchive(window.location.origin)
     let fullPath = path.join('data', filename)
     await archive.writeFile(fullPath, buffer)
-
-    console.log("YES")
     dispatch({
       type: ADD_IMAGE,
       image: {
@@ -48,7 +46,6 @@ export default function reducer(state = {
         ...state,
         entries: [action.image].concat(state.entries)
       }
-      console.log(newstate)
       return newstate
     default: return state
   }

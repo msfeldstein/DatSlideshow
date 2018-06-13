@@ -1,27 +1,24 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { colors } from 'style-constants'
-import Reorder from 'react-reorder'
+import {Sortable} from 'react-sortable'
 
 class TimelineEntry extends Component {
   render() {
     const style = {
-      background: colors.GRAY
+      margin: 10
     }
-    const elements = this.props.entries.map(e => {
-      return {
-        name: e.path,
-        path: e.path
-      }
-    })
-    return (<div>
-      ${this.props.name}
-    </div>)
+    const imgStyle = {
+      width: 128,
+      height: 128,
+      borderRadius: 10,
+      border: '2px solid white'
+    }
+
+    return (<li {...this.props} style={style}>
+      <img style={imgStyle} src={this.props.element.path} />
+    </li>)
   }
 }
 
-export default TimelineEntry connect(state => {
-  return {
-    entries: state.images.entries
-  }
-})(TimelineEntry)
+export default Sortable(TimelineEntry)

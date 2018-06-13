@@ -17586,6 +17586,289 @@ function warning(message) {
 
 /***/ }),
 
+/***/ "./node_modules/react-sortable/lib/SortableComposition.js":
+/*!****************************************************************!*\
+  !*** ./node_modules/react-sortable/lib/SortableComposition.js ***!
+  \****************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.HORIZONTAL = exports.VERTICAL = undefined;
+
+var _extends = Object.assign || function (target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i];for (var key in source) {
+      if (Object.prototype.hasOwnProperty.call(source, key)) {
+        target[key] = source[key];
+      }
+    }
+  }return target;
+};
+
+var _createClass = function () {
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+  };
+}();
+
+exports.SortableComposition = SortableComposition;
+
+var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+
+var _react2 = _interopRequireDefault(_react);
+
+var _propTypes = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
+var _helpers = __webpack_require__(/*! ./helpers.js */ "./node_modules/react-sortable/lib/helpers.js");
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { default: obj };
+}
+
+function _objectWithoutProperties(obj, keys) {
+  var target = {};for (var i in obj) {
+    if (keys.indexOf(i) >= 0) continue;if (!Object.prototype.hasOwnProperty.call(obj, i)) continue;target[i] = obj[i];
+  }return target;
+}
+
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+}
+
+function _possibleConstructorReturn(self, call) {
+  if (!self) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
+  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
+
+var VERTICAL = exports.VERTICAL = 'VERTICAL';
+var HORIZONTAL = exports.HORIZONTAL = 'HORIZONTAL';
+
+/*** Higher-order component - this component works like a factory for draggable items */
+
+var draggingIndex = null;
+
+function SortableComposition(Component) {
+  var flowDirection = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : VERTICAL;
+
+  return function (_React$Component) {
+    _inherits(Sortable, _React$Component);
+
+    function Sortable() {
+      var _ref;
+
+      var _temp, _this, _ret;
+
+      _classCallCheck(this, Sortable);
+
+      for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+        args[_key] = arguments[_key];
+      }
+
+      return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = Sortable.__proto__ || Object.getPrototypeOf(Sortable)).call.apply(_ref, [this].concat(args))), _this), _this.sortEnd = function (e) {
+        e.preventDefault();
+        draggingIndex = null;
+      }, _this.sortStart = function (e) {
+        draggingIndex = e.currentTarget.dataset.id;
+        var dt = e.dataTransfer;
+        if (dt !== undefined) {
+          e.dataTransfer.setData('text', e.target.innerHTML);
+
+          //fix http://stackoverflow.com/questions/27656183/preserve-appearance-of-dragged-a-element-when-using-html5-draggable-attribute
+          if (dt.setDragImage && e.currentTarget.tagName.toLowerCase() === 'a') {
+            dt.setDragImage(e.target, 0, 0);
+          }
+        }
+      }, _this.dragOver = function (e) {
+        e.preventDefault();
+        var _this$props = _this.props,
+            moveInMiddle = _this$props.moveInMiddle,
+            sortId = _this$props.sortId;
+
+        var overEl = e.currentTarget; //underlying element
+        var indexDragged = Number(overEl.dataset.id); //index of underlying element in the set DOM elements
+        var indexFrom = Number(draggingIndex);
+        var height = overEl.getBoundingClientRect().height;
+        var width = overEl.getBoundingClientRect().width;
+        var positionX = e.clientX;
+        var positionY = e.clientY;
+        var topOffset = overEl.getBoundingClientRect().top;
+        var leftOffset = overEl.getBoundingClientRect().left;
+        var mouseBeyond = void 0;
+        var items = _this.props.items;
+
+        if (flowDirection === VERTICAL) {
+          mouseBeyond = (0, _helpers.isMouseBeyond)(positionY, topOffset, height, moveInMiddle);
+        }
+
+        if (flowDirection === HORIZONTAL) {
+          mouseBeyond = (0, _helpers.isMouseBeyond)(positionX, leftOffset, width, moveInMiddle);
+        }
+
+        var shouldSwapItems = _helpers.isMouseBeyond && indexDragged !== indexFrom;
+
+        if (indexDragged !== indexFrom && mouseBeyond) {
+          items = (0, _helpers.swapArrayElements)(items, indexFrom, indexDragged);
+          draggingIndex = indexDragged;
+          _this.props.onSortItems(items);
+        }
+      }, _temp), _possibleConstructorReturn(_this, _ret);
+    }
+
+    _createClass(Sortable, [{
+      key: 'render',
+      value: function render() {
+        var newProps = Object.assign({}, this.props);
+        delete newProps.onSortItems;
+
+        var sortId = newProps.sortId,
+            props = _objectWithoutProperties(newProps, ['sortId']);
+
+        return _react2.default.createElement(Component, _extends({
+          draggable: true,
+          onDragOver: this.dragOver,
+          onDragStart: this.sortStart,
+          onDragEnd: this.sortEnd,
+          onTouchStart: this.sortStart,
+          onTouchMove: this.dragOver,
+          onTouchEnd: this.sortEnd,
+          'data-id': sortId
+        }, props));
+      }
+    }]);
+
+    return Sortable;
+  }(_react2.default.Component);
+
+  Sortable.propTypes = {
+    items: _propTypes2.default.array.isRequired,
+    onSortItems: _propTypes2.default.func.isRequired,
+    sortId: _propTypes2.default.number
+  };
+
+  Sortable.defaultProps = {
+    moveInMiddle: false
+  };
+
+  return Sortable;
+}
+
+/***/ }),
+
+/***/ "./node_modules/react-sortable/lib/helpers.js":
+/*!****************************************************!*\
+  !*** ./node_modules/react-sortable/lib/helpers.js ***!
+  \****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.swapArrayElements = swapArrayElements;
+exports.isMouseBeyond = isMouseBeyond;
+/*** Helper functions - they are decoupled because of testability */
+
+/**
+ * @param {array} items
+ * @param {number} indexFrom
+ * @param {number} indexTo
+ * @returns {array}
+ */
+function swapArrayElements(items, indexFrom, indexTo) {
+  var item = items[indexTo];
+  items[indexTo] = items[indexFrom];
+  items[indexFrom] = item;
+  return items;
+}
+
+/**
+ * @param {number} mousePos
+ * @param {number} elementPos
+ * @param {number} elementSize
+ * @returns {boolean}
+ */
+function isMouseBeyond(mousePos, elementPos, elementSize, moveInMiddle) {
+  var breakPoint;
+  if (moveInMiddle) {
+    breakPoint = elementSize / 2; //break point is set to the middle line of element
+  } else {
+    breakPoint = 0;
+  }
+  var mouseOverlap = mousePos - elementPos;
+  return mouseOverlap > breakPoint;
+}
+
+/***/ }),
+
+/***/ "./node_modules/react-sortable/lib/index.js":
+/*!**************************************************!*\
+  !*** ./node_modules/react-sortable/lib/index.js ***!
+  \**************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _SortableComposition = __webpack_require__(/*! ./SortableComposition */ "./node_modules/react-sortable/lib/SortableComposition.js");
+
+Object.defineProperty(exports, 'sortable', {
+  enumerable: true,
+  get: function get() {
+    return _SortableComposition.SortableComposition;
+  }
+});
+Object.defineProperty(exports, 'Sortable', {
+  enumerable: true,
+  get: function get() {
+    return _SortableComposition.SortableComposition;
+  }
+});
+Object.defineProperty(exports, 'HORIZONTAL', {
+  enumerable: true,
+  get: function get() {
+    return _SortableComposition.HORIZONTAL;
+  }
+});
+Object.defineProperty(exports, 'VERTICAL', {
+  enumerable: true,
+  get: function get() {
+    return _SortableComposition.VERTICAL;
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/react/cjs/react.development.js":
 /*!*****************************************************!*\
   !*** ./node_modules/react/cjs/react.development.js ***!
@@ -20625,6 +20908,14 @@ var _Header = __webpack_require__(/*! ./Header */ "./src/components/Header.js");
 
 var _Header2 = _interopRequireDefault(_Header);
 
+var _Timeline = __webpack_require__(/*! ./Timeline */ "./src/components/Timeline.js");
+
+var _Timeline2 = _interopRequireDefault(_Timeline);
+
+var _Preview = __webpack_require__(/*! ./Preview */ "./src/components/Preview.js");
+
+var _Preview2 = _interopRequireDefault(_Preview);
+
 var _styleConstants = __webpack_require__(/*! style-constants */ "./src/style-constants.js");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -20634,8 +20925,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-// import Timeline from './Timeline'
-
 
 var App = function (_Component) {
   _inherits(App, _Component);
@@ -20656,9 +20945,10 @@ var App = function (_Component) {
       };
       return _react2.default.createElement(
         'div',
-        { style: style },
+        { className: 'inner-container', style: style },
         _react2.default.createElement(_Header2.default, null),
-        _react2.default.createElement(_Dropper2.default, null)
+        _react2.default.createElement(_Preview2.default, null),
+        _react2.default.createElement(_Timeline2.default, null)
       );
     }
   }]);
@@ -20830,6 +21120,239 @@ exports.default = (0, _reactRedux.connect)(function (state) {
 
 /***/ }),
 
+/***/ "./src/components/Preview.js":
+/*!***********************************!*\
+  !*** ./src/components/Preview.js ***!
+  \***********************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactRedux = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
+
+var _styleConstants = __webpack_require__(/*! style-constants */ "./src/style-constants.js");
+
+var _datApi = __webpack_require__(/*! dat-api */ "./src/dat-api.js");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Preview = function (_Component) {
+  _inherits(Preview, _Component);
+
+  function Preview() {
+    _classCallCheck(this, Preview);
+
+    return _possibleConstructorReturn(this, (Preview.__proto__ || Object.getPrototypeOf(Preview)).apply(this, arguments));
+  }
+
+  _createClass(Preview, [{
+    key: 'render',
+    value: function render() {
+      return _react2.default.createElement(
+        'div',
+        { className: 'preview-container' },
+        'PREVIEW'
+      );
+    }
+  }]);
+
+  return Preview;
+}(_react.Component);
+
+exports.default = (0, _reactRedux.connect)(function (state) {
+  return {
+    entries: state.images.entries
+  };
+})(Preview);
+
+/***/ }),
+
+/***/ "./src/components/Timeline.js":
+/*!************************************!*\
+  !*** ./src/components/Timeline.js ***!
+  \************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactRedux = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
+
+var _styleConstants = __webpack_require__(/*! style-constants */ "./src/style-constants.js");
+
+var _reactSortable = __webpack_require__(/*! react-sortable */ "./node_modules/react-sortable/lib/index.js");
+
+var _reactSortable2 = _interopRequireDefault(_reactSortable);
+
+var _TimelineEntry = __webpack_require__(/*! ./TimelineEntry */ "./src/components/TimelineEntry.js");
+
+var _TimelineEntry2 = _interopRequireDefault(_TimelineEntry);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Timeline = function (_Component) {
+  _inherits(Timeline, _Component);
+
+  function Timeline() {
+    _classCallCheck(this, Timeline);
+
+    return _possibleConstructorReturn(this, (Timeline.__proto__ || Object.getPrototypeOf(Timeline)).apply(this, arguments));
+  }
+
+  _createClass(Timeline, [{
+    key: 'onSortItems',
+    value: function onSortItems() {
+      console.log("SORT", arguments);
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var _this2 = this;
+
+      var style = {
+        background: _styleConstants.colors.GRAY,
+        display: 'flex',
+        flexOrient: 'row',
+        listStyleType: 'none',
+        margin: 0,
+        padding: 0,
+        overflowX: 'scroll'
+      };
+      var elements = this.props.entries.map(function (e, i) {
+        return _react2.default.createElement(_TimelineEntry2.default, {
+          element: e,
+          sortId: i,
+          onSortItems: _this2.onSortItems.bind(_this2),
+          items: _this2.props.entries,
+          key: i });
+      });
+      return _react2.default.createElement(
+        'ul',
+        { className: 'sortable-list', style: style },
+        elements
+      );
+    }
+  }]);
+
+  return Timeline;
+}(_react.Component);
+
+exports.default = (0, _reactRedux.connect)(function (state) {
+  return {
+    entries: state.images.entries || []
+  };
+})(Timeline);
+
+/***/ }),
+
+/***/ "./src/components/TimelineEntry.js":
+/*!*****************************************!*\
+  !*** ./src/components/TimelineEntry.js ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactRedux = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
+
+var _styleConstants = __webpack_require__(/*! style-constants */ "./src/style-constants.js");
+
+var _reactSortable = __webpack_require__(/*! react-sortable */ "./node_modules/react-sortable/lib/index.js");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var TimelineEntry = function (_Component) {
+  _inherits(TimelineEntry, _Component);
+
+  function TimelineEntry() {
+    _classCallCheck(this, TimelineEntry);
+
+    return _possibleConstructorReturn(this, (TimelineEntry.__proto__ || Object.getPrototypeOf(TimelineEntry)).apply(this, arguments));
+  }
+
+  _createClass(TimelineEntry, [{
+    key: 'render',
+    value: function render() {
+      var style = {
+        margin: 10
+      };
+      var imgStyle = {
+        width: 128,
+        height: 128,
+        borderRadius: 10,
+        border: '2px solid white'
+      };
+
+      return _react2.default.createElement(
+        'li',
+        _extends({}, this.props, { style: style }),
+        _react2.default.createElement('img', { style: imgStyle, src: this.props.element.path })
+      );
+    }
+  }]);
+
+  return TimelineEntry;
+}(_react.Component);
+
+exports.default = (0, _reactSortable.Sortable)(TimelineEntry);
+
+/***/ }),
+
 /***/ "./src/dat-api.js":
 /*!************************!*\
   !*** ./src/dat-api.js ***!
@@ -20879,8 +21402,7 @@ var load = exports.load = function () {
           case 2:
             json = _context2.sent;
             obj = JSON.parse(json);
-
-            console.log(json, obj);
+            return _context2.abrupt('return', obj);
 
           case 5:
           case 'end':
@@ -20943,7 +21465,8 @@ var store = (0, _redux.createStore)((0, _redux.combineReducers)({
 }), (0, _redux.applyMiddleware)(_reduxThunk2.default));
 
 (0, _datApi.load)().then(function (data) {
-  console.log(data);
+  console.log(data, 'data');
+  store.dispatch((0, _images.initialize)(data));
 });
 
 (0, _reactDom.render)(_react2.default.createElement(
@@ -21013,8 +21536,6 @@ function addImage(buffer) {
               return archive.writeFile(fullPath, buffer);
 
             case 5:
-
-              console.log("YES");
               dispatch({
                 type: ADD_IMAGE,
                 image: {
@@ -21022,7 +21543,7 @@ function addImage(buffer) {
                 }
               });
 
-            case 7:
+            case 6:
             case 'end':
               return _context.stop();
           }
@@ -21051,7 +21572,6 @@ function reducer() {
       var newstate = _extends({}, state, {
         entries: [action.image].concat(state.entries)
       });
-      console.log(newstate);
       return newstate;
     default:
       return state;
