@@ -17,6 +17,9 @@ html, body, #container {
   flex-direction: column;
 }
 
+.Timeline {
+  height: 156px;
+}
 
 
 .preview-container {

@@ -8,7 +8,7 @@ class Timeline extends Component {
   onSortItems() {
     console.log("SORT", arguments)
   }
-  
+
   render() {
     const style = {
       background: colors.GRAY,
@@ -28,7 +28,7 @@ class Timeline extends Component {
         key={i} />
     })
     return (
-      <ul className='sortable-list' style={style}>
+      <ul className='Timeline sortable-list' style={style}>
         {elements}
       </ul>
     )

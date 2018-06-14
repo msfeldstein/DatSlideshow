@@ -4066,6 +4066,10 @@ regjsparser@^0.1.4:
   dependencies:
     jsesc "~0.5.0"
 
+regl@^1.3.6:
+  version "1.3.6"
+  resolved "https://registry.yarnpkg.com/regl/-/regl-1.3.6.tgz#d69967c577208ce69c2de7989c6188d565b242a0"
+
 remove-trailing-separator@^1.0.1:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/remove-trailing-separator/-/remove-trailing-separator-1.1.0.tgz#c24bce2a283adad5bc3f58e0d48249b92379d8ef"
