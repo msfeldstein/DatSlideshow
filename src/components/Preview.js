@@ -34,7 +34,8 @@ class Preview extends Component {
   updateRegl() {
     let tex;
     if (this.state.texturesLoaded) {
-      tex = this.regl.texture(this.state.textures[0])
+      const i = this.props.playbackManager.currentFrameIndex()
+      tex = this.regl.texture(this.state.textures[i])
     }
     else {
       tex = this.regl.texture({shape: [16,16]})
@@ -71,12 +72,12 @@ class Preview extends Component {
           [1, -1],
         ],
         uv: [
-          [0, 0],
           [0, 1],
-          [1, 1],
           [0, 0],
-          [1, 1],
-          [1, 0]
+          [1, 0],
+          [0, 1],
+          [1, 0],
+          [1, 1]
         ]
       },
 
@@ -90,7 +91,7 @@ class Preview extends Component {
   }
 
   onFrame(t) {
-    
+    this.updateRegl()
   }
 
   componentWillReceiveProps(nextProps) {

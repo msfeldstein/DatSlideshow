@@ -6,16 +6,12 @@ import { createStore, combineReducers, applyMiddleware } from 'redux'
 import thunk from 'redux-thunk'
 import images, { initialize } from './modules/images'
 import { load } from 'dat-api'
-import PlaybackManager from 'PlaybackManager'
 import playbackManager, { setPlaybackManager, setPlaylist } from 'modules/playback'
 
 const store = createStore(combineReducers({
   images,
   playbackManager
 }), applyMiddleware(thunk))
-
-const manager = new PlaybackManager()
-store.dispatch(setPlaybackManager(manager))
 
 load().then(data => {
   console.log(data, 'data')

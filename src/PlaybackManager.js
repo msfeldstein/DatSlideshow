@@ -9,7 +9,7 @@ export default class PlaybackManager {
       duration: 0
     }
   }
-  setItems(items) {
+  setPlaylist(items) {
     this.items = items
   }
 
@@ -23,7 +23,7 @@ export default class PlaybackManager {
 
   play() {
     this.playing = true
-    this.lastFrameTime = Date.now()
+    this.lastFrameTime = performance.now()
     this._frame()
   }
 
@@ -35,12 +35,15 @@ export default class PlaybackManager {
     }
   }
 
+  currentFrameIndex() {
+    return Math.floor(this.time / 2000)
+  }
+
   _frame(dt) {
-    const now = Date.now()
+    const now = performance.now()
     if (this.playing) {
       this.time += now - this.lastFrameTime  
     }
-    
     this.lastFrameTime = now
     if (this.time > this.duration()) {
       this.time = 0

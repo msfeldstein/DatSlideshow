@@ -62,5 +62,4 @@ export default connect(state => {
   return {
     togglePlayPause: _ => dispatch(togglePlayPause())  
   }
-  
 })(Scrubber)
