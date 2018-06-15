@@ -1,6 +1,7 @@
 import React from 'react'
 import FileDrop from 'react-file-drop'
 import { connect } from 'react-redux'
+import { togglePlayPause } from 'modules/playback'
 
 class Scrubber extends React.Component {
   constructor(props) {
@@ -29,7 +30,7 @@ class Scrubber extends React.Component {
   }
 
   playPause() {
-    this.props.playbackManager.playPause()
+    this.props.togglePlayPause()
   }
   
   render() {
@@ -54,6 +55,12 @@ class Scrubber extends React.Component {
 export default connect(state => {
   return {
     entries: state.images.entries || [],
-    playbackManager: state.playbackManager.manager
+    playbackManager: state.playbackManager.manager,
+    playing: state.playbackManager && state.playbackManager.playing
   }
+}, dispatch => {
+  return {
+    togglePlayPause: _ => dispatch(togglePlayPause())  
+  }
+  
 })(Scrubber)

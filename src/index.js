@@ -7,7 +7,7 @@ import thunk from 'redux-thunk'
 import images, { initialize } from './modules/images'
 import { load } from 'dat-api'
 import PlaybackManager from 'PlaybackManager'
-import playbackManager, { setPlaybackManager } from 'modules/playback'
+import playbackManager, { setPlaybackManager, setPlaylist } from 'modules/playback'
 
 const store = createStore(combineReducers({
   images,
@@ -20,9 +20,7 @@ store.dispatch(setPlaybackManager(manager))
 load().then(data => {
   console.log(data, 'data')
   store.dispatch(initialize(data))
-  manager.setItems(data)
-  manager.play()
-
+  store.dispatch(setPlaylist(data))
 })
 
 render(
