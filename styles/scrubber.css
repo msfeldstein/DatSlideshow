@@ -1,0 +1,41 @@
+.Scrubber {
+  display: flex;
+  flex-direction: row;
+  padding: 32px;
+  box-sizing: border-box;
+  align-items: center;
+}
+
+.Scrubber-PlayPause {
+  width: 32px;
+  height: 32px;
+  background-size: 100% 100%;
+}
+
+.Scrubber-PlayPause.Paused {
+  background-image: url('/assets/Play.png');
+}
+.Scrubber-PlayPause.Playing {
+  background-image: url('/assets/Pause.png');
+}
+
+.Scrubber-SliderTrack {
+  position: relative;
+  flex-grow: 1;
+  height: 4px;
+  margin-left: 8px;
+  margin-right: 8px;
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.Scrubber-Slider {
+  height: 16px;
+  margin-top: -6px;
+  width: 2px;
+  background: white;
+  position: absolute;
+}
+
+.Scrubber-Time {
+
+}

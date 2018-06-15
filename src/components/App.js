@@ -3,6 +3,7 @@ import Dropper from './Dropper'
 import Header from './Header'
 import Timeline from './Timeline'
 import Preview from './Preview'
+import Scrubber from './Scrubber'
 import { colors } from 'style-constants'
 
 class App extends Component {
@@ -14,7 +15,10 @@ class App extends Component {
     }
     return (<div className="inner-container" style={style}>
       <Header />
-      <Preview />
+      <div className="content-container">
+        <Preview />
+        <Scrubber />
+      </div>
       <Timeline />
     </div>)
   }
