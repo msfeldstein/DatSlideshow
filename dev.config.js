@@ -1,4 +1,5 @@
 const path = require('path')
+const webpack = require('webpack')
 
 module.exports = {
   mode: "development",
@@ -22,10 +23,16 @@ module.exports = {
         exclude: '/node_modules/',
         loader: 'babel-loader',
         query: {
-          presets: ['env', 'react']
+          presets: ['env', 'react'],
+          compact: false
         }
       }
     ]
   },
+  plugins: [
+    new webpack.ProvidePlugin({
+      Buffer: 'buffer'
+    })
+  ],
   watch: true
 }

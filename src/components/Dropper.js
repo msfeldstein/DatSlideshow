@@ -10,18 +10,42 @@ function uuidv4() {
 }
 
 class Dropper extends React.Component {
-  onDrop(files) {
-    const file = files[0]
-    const reader = new FileReader()
-    reader.onload = () => {
-      const buffer = reader.result
-      this.props.dispatch(addImage(buffer))
+  constructor(props) {
+    super(props)
+    this.state = {
+      dragOver: false
     }
-    reader.readAsArrayBuffer(file)
+  }
+  componentDidMount() {
+    window.addEventListener('dragenter', () => {
+      this.setState({
+        dragOver: true
+      })
+    })
+
+    // todo This doesn't work but we need it to, dragleave seemsto constnantly fire
+    window.addEventListener('dragexit', () => {
+      this.setState({
+        dragOver: false
+      })
+    })
+  }
+  onDrop(files) {
+    this.setState({
+        dragOver: false
+      })
+    const file = files[0]
+    this.props.dispatch(addImage(file))
   }
   render() {
+    const style = {
+      display: this.state.dragOver ? 'inherit' : 'none'
+    }
+
     return (
-      <FileDrop onDrop={this.onDrop.bind(this)}>Upload an image</FileDrop>
+      <div style={style} className="file-drop-container">
+        <FileDrop onDrop={this.onDrop.bind(this)}>Upload an image</FileDrop>
+      </div>
     )
   }
 }

@@ -37,6 +37,7 @@ class Scrubber extends React.Component {
     let durationSeconds = this.props.entries.length * 2
     const durationMinutes = Math.floor(durationSeconds / 60)
     durationSeconds = durationSeconds - durationMinutes * 60
+    if (durationSeconds < 10) durationSeconds = `0${durationSeconds}`
     const playState = this.props.playbackManager.playing ? 'Playing' : 'Paused'
     return (
       <div className="Scrubber">

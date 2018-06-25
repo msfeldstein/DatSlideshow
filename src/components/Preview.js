@@ -9,15 +9,19 @@ class Preview extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      texturesLoaded: false
+      texturesLoaded: false,
+      images: {}
     }
+    this.textureCache = {}
     this.onFrame = this.onFrame.bind(this)
+    this.updateRegl = this.updateRegl.bind(this)
     this.containerRef = React.createRef()
   }
 
   componentDidMount() {
     this.updatePlaybackManager(this.props, {})
     this.regl = Regl(this.containerRef.current)
+    this.regl.frame(this.updateRegl)
   }
 
   updatePlaybackManager(nextProps, props) {
@@ -31,20 +35,39 @@ class Preview extends Component {
     }
   }
 
+  textureForImage(img) {
+    if (!img) {
+      if (!this.emptyTexture)
+        this.emptyTexture = this.regl.texture({shape: [1,1]})
+      return this.emptyTexture
+    }
+    if (!this.textureCache[img.src]) {
+      console.log("Load texture")
+      this.textureCache[img.src] = this.regl.texture(img)  
+    }
+    return this.textureCache[img.src]
+  }
+
   updateRegl() {
     let tex;
-    if (this.state.texturesLoaded) {
-      const i = this.props.playbackManager.currentFrameIndex()
-      tex = this.regl.texture(this.state.textures[i])
+    let imageResolution = [1, 1]
+    let canvasResolution = [1,2]
+    const i = this.props.playbackManager.currentFrameIndex()
+    const img = this.state.images[i]
+    if (this.state.texturesLoaded && img) {
+      tex = this.textureForImage(img)
+      imageResolution = [ img.width, img.height ]
     }
     else {
-      tex = this.regl.texture({shape: [16,16]})
+      tex = this.textureForImage(null)
     }
     this.regl({
       // In a draw call, we can pass the shader source code to regl
       frag: `
       precision mediump float;
       uniform sampler2D texture;
+      uniform vec2 imageResolution;
+      uniform vec2 canvasResolution;
       varying vec2 vUV;
       void main () {
         vec4 col = texture2D(texture, vUV);
@@ -82,6 +105,8 @@ class Preview extends Component {
       },
 
       uniforms: {
+        imageResolution,
+        canvasResolution,
         texture: tex,
       },
 
@@ -97,21 +122,22 @@ class Preview extends Component {
   componentWillReceiveProps(nextProps) {
     const manifest = {}
     nextProps.entries.forEach((e, i) => {
-      console.log(e.path)
       manifest[i] = {
         type: 'image',
-        src: e.path
+        src: e.scaled
       }
     })
-    console.log("Manifest", manifest)
     resl({
       manifest: manifest,
       onDone: (assets) => {
-        console.log("Assets", assets)
+        console.log(assets, assets.length, "len")
         this.setState({
           texturesLoaded: true,
-          textures: assets
+          images: assets
         })
+      },
+      onError: (err) => {
+        console.error(err)
       }
     })
   }
@@ -128,7 +154,6 @@ class Preview extends Component {
 }
 
 export default connect(state => {
-  console.log(state,"Connect", state.images.entries)
   return {
     entries: state.images.entries || [],
     playbackManager: state.playbackManager.manager

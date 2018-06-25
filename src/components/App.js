@@ -20,6 +20,7 @@ class App extends Component {
         <Scrubber />
       </div>
       <Timeline />
+      <Dropper />
     </div>)
   }
 }

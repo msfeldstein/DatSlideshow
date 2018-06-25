@@ -14,9 +14,9 @@ class TimelineEntry extends Component {
       borderRadius: 10,
       border: '2px solid white'
     }
-
+    console.log("EL", this.props.element.thumb)
     return (<li {...this.props} style={style}>
-      <img style={imgStyle} src={this.props.element.path} />
+      <img style={imgStyle} src={this.props.element.thumb} />
     </li>)
   }
 }

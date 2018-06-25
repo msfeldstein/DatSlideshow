@@ -36,6 +36,7 @@ class Timeline extends Component {
 }
 
 export default connect(state => {
+  console.log("IMAGES", state.images)
   return {
     entries: state.images.entries || []
   }

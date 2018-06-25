@@ -1,4 +1,6 @@
 import path from 'path'
+import ImageTools from 'ImageTools'
+import FileToBuffer from 'FileToBuffer'
 
 function uuidv4() {
   return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
@@ -16,17 +18,32 @@ export function initialize(data) {
   }
 }
 
-export function addImage(buffer) {
-  return async function(dispatch) {
+export function addImage(file) {
+  function genURL() {
     const filename = uuidv4() + ".jpg"
+    let fullPath = path.join('/data', filename)
+    return fullPath
+  }
+  return async function(dispatch) {
+    const meta = {}
     let archive = new DatArchive(window.location.origin)
-    let fullPath = path.join('data', filename)
-    await archive.writeFile(fullPath, buffer)
+    
+    let thumb = await ImageTools.resizeAsync(file, {width: 256, height: 256 })
+    thumb = await FileToBuffer(thumb)
+    meta.thumb = genURL()
+    archive.writeFile(meta.thumb, thumb)
+
+    let scaled = await ImageTools.resizeAsync(file, {width: 1024, height: 1024})
+    scaled = await FileToBuffer(scaled)
+    meta.scaled = genURL()
+    await archive.writeFile(meta.scaled, scaled)
+
+    let originalBuffer = await FileToBuffer(file)
+    meta.original = genURL()
+    await archive.writeFile(meta.original, originalBuffer)
     dispatch({
       type: ADD_IMAGE,
-      image: {
-        path: fullPath
-      }
+      image: meta
     })
   }
   
